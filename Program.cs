@@ -1,12 +1,19 @@
+using HealthChecks.UI.Client;
+
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+
+using Prometheus;
+
 using Serilog;
+
 using TutorialPlatform.Areas.Identity.Data;
 using TutorialPlatform.Services;
 using TutorialPlatform.Settings;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
@@ -21,9 +28,9 @@ builder.Host.UseSerilog();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection("ConnectionStrings"));
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
-                       throw new InvalidOperationException(
-                           "Connection string 'DefaultConnection' not found.");
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
+                          throw new InvalidOperationException(
+                              "Connection string 'DefaultConnection' not found.");
 ;
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
@@ -38,7 +45,25 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
-var app = builder.Build();
+builder.Services.AddHealthChecksUI(setup =>
+{
+    setup.SetEvaluationTimeInSeconds(10);     
+    setup.MaximumHistoryEntriesPerEndpoint(50);
+    setup.AddHealthCheckEndpoint("TutorialPlatform", "/health");   
+}).AddInMemoryStorage();     
+
+var seqHealthUri = builder.Configuration["HealthChecks:Seq:Uri"] 
+                   ?? throw new InvalidOperationException("Seq health check URI not configured.");
+
+builder.Services.AddHealthChecks()
+    .AddSqlServer(connectionString, name: "sql", tags: ["db", "sql"])
+    .AddUrlGroup(
+        new Uri(seqHealthUri),
+        "seq-server",
+        tags: ["logging", "seq"]
+    );
+
+WebApplication app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
@@ -52,16 +77,27 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseHttpMetrics();
+
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHealthChecks("/health", new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
+
+app.MapHealthChecksUI(options =>
+{
+    options.UIPath = "/health-ui";
+});
+
+app.MapMetrics();
 
 app.MapStaticAssets();
 app.MapRazorPages()
     .WithStaticAssets();
 
-using (var scope = app.Services.CreateScope())
+using (IServiceScope scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    ApplicationDbContext db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     db.Database.Migrate();
     Seeder.Seed(db);
 }
