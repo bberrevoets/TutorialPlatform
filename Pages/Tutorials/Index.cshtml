@@ -4,13 +4,26 @@
     ViewData["Title"] = "Tutorials";
 }
 
-<h1>Tutorials</h1>
+<h1>Available Tutorials</h1>
 
-@foreach (var tutorial in Model.Tutorials)
+@foreach (var item in Model.Tutorials)
 {
+    var t = item.Tutorial;
+
     <div class="tutorial-card">
-        <h3>@tutorial.Title</h3>
-        <p>@tutorial.Description</p>
-        <a asp-page="View" asp-route-id="@tutorial.Id">View Tutorial</a>
+        <h3>@t.Title</h3>
+        <p>@t.Description</p>
+        <p>
+            Progress: @item.CompletedChapters /@item.TotalChapters
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" style="width: @(100 * item.CompletedChapters / (item.TotalChapters == 0 ? 1 : item.TotalChapters))%"></div>
+            </div>
+
+            @if (item.IsCompleted)
+            {
+                <span style="color: green">✓ Completed</span>
+            }
+        </p>
+        <a asp-page="View" asp-route-id="@t.Id">View Tutorial</a>
     </div>
 }
