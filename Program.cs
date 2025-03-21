@@ -1,3 +1,5 @@
+using Berrevoets.TutorialPlatform.Services;
+
 using HealthChecks.UI.Client;
 
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -49,6 +51,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 builder.Services.AddRazorPages();
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddTransient<CertificateService>();
 
 builder.Services.AddHealthChecksUI(setup =>
 {
