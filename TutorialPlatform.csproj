@@ -22,4 +22,12 @@
     <PackageReference Include="Serilog.Sinks.Seq" Version="9.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="E:\Repos\bberrevoets\TutorialPlatform\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="E:\Repos\bberrevoets\TutorialPlatform\.editorconfig" />
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,16 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Tutorials";
+}
+
+<h1>Tutorials</h1>
+
+@foreach (var tutorial in Model.Tutorials)
+{
+    <div class="tutorial-card">
+        <h3>@tutorial.Title</h3>
+        <p>@tutorial.Description</p>
+        <a asp-page="View" asp-route-id="@tutorial.Id">View Tutorial</a>
+    </div>
+}

@@ -1,0 +1,18 @@
+﻿@page "{id:int}"
+@model TutorialPlatform.Pages.Tutorials.ViewModel
+@{
+    ViewData["Title"] = Model.Tutorial?.Title;
+}
+
+<h1>@Model.Tutorial?.Title</h1>
+<p>@Model.Tutorial?.Description</p>
+
+<h3>Chapters</h3>
+<ul>
+    @foreach (var chapter in Model.Tutorial?.Chapters ?? [])
+    {
+        <li>
+            <a asp-page="/Tutorials/Chapter" asp-route-id="@chapter.Id">@chapter.Title</a>
+        </li>
+    }
+</ul>

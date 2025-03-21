@@ -1,0 +1,11 @@
+﻿@page "{id:int}"
+@model ChapterModel
+@{
+    ViewData["Title"] = Model.Chapter?.Title;
+}
+
+<h1>@Model.Chapter?.Title</h1>
+
+<article>
+    @Html.Raw(Model.HtmlContent)
+</article>
