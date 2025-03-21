@@ -1,6 +1,7 @@
-﻿namespace TutorialPlatform.Settings;
-
-public class ConnectionStrings
+﻿namespace TutorialPlatform.Settings
 {
-    public string DefaultConnection { get; set; } = string.Empty;
+    public class ConnectionStrings
+    {
+        public string DefaultConnection { get; set; } = string.Empty;
+    }
 }

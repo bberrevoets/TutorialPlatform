@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 using TutorialPlatform.Models;
 
-namespace TutorialPlatform.Areas.Identity.Data
+namespace TutorialPlatform.Data
 {
     public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
@@ -17,5 +17,7 @@ namespace TutorialPlatform.Areas.Identity.Data
         public DbSet<Chapter> Chapters { get; set; }
         public DbSet<UserTutorialProgress> UserTutorialProgresses { get; set; } = default!;
         public DbSet<UserChapterProgress> UserChapterProgresses { get; set; } = default!;
+        public DbSet<Category> Categories { get; set; } = default!;
+        public DbSet<Tag> Tags { get; set; } = default!;
     }
 }

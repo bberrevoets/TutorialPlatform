@@ -42,20 +42,20 @@ body { margin-bottom: 60px; }
 .tutorial-card a:hover { text-decoration: underline; }
 
 .progress-bar-container {
-    background: #eee;
     -ms-border-radius: 4px;
+    background: #eee;
     border-radius: 4px;
-    overflow: hidden;
     height: 10px;
-    margin-top: 4px;
     margin-bottom: 6px;
+    margin-top: 4px;
+    overflow: hidden;
 }
 
 .progress-bar-fill {
-    background: green;
-    height: 100%;
     -ms-transition: width 0.3s ease;
     -o-transition: width 0.3s ease;
     -webkit-transition: width 0.3s ease;
+    background: green;
+    height: 100%;
     transition: width 0.3s ease;
 }

@@ -14,8 +14,8 @@ using TutorialPlatform.Data;
 namespace TutorialPlatform.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250321172855_AddLengthLimitsToTutorialAndChapter")]
-    partial class AddLengthLimitsToTutorialAndChapter
+    [Migration("20250321220703_AddTutorialCategoriesAndTags")]
+    partial class AddTutorialCategoriesAndTags
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -229,6 +229,39 @@ namespace TutorialPlatform.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("TagTutorial", b =>
+                {
+                    b.Property<int>("TagsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TutorialsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("TagsId", "TutorialsId");
+
+                    b.HasIndex("TutorialsId");
+
+                    b.ToTable("TagTutorial");
+                });
+
+            modelBuilder.Entity("TutorialPlatform.Models.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+                });
+
             modelBuilder.Entity("TutorialPlatform.Models.Chapter", b =>
                 {
                     b.Property<int>("Id")
@@ -259,6 +292,24 @@ namespace TutorialPlatform.Migrations
                     b.ToTable("Chapters");
                 });
 
+            modelBuilder.Entity("TutorialPlatform.Models.Tag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tags");
+                });
+
             modelBuilder.Entity("TutorialPlatform.Models.Tutorial", b =>
                 {
                     b.Property<int>("Id")
@@ -266,6 +317,9 @@ namespace TutorialPlatform.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -279,7 +333,71 @@ namespace TutorialPlatform.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Tutorials");
+                });
+
+            modelBuilder.Entity("TutorialPlatform.Models.UserChapterProgress", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChapterId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CompletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("UserTutorialProgressId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChapterId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserTutorialProgressId");
+
+                    b.ToTable("UserChapterProgresses");
+                });
+
+            modelBuilder.Entity("TutorialPlatform.Models.UserTutorialProgress", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CompletionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("TutorialId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TutorialId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserTutorialProgresses");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -333,6 +451,21 @@ namespace TutorialPlatform.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("TagTutorial", b =>
+                {
+                    b.HasOne("TutorialPlatform.Models.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("TagsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TutorialPlatform.Models.Tutorial", null)
+                        .WithMany()
+                        .HasForeignKey("TutorialsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("TutorialPlatform.Models.Chapter", b =>
                 {
                     b.HasOne("TutorialPlatform.Models.Tutorial", "Tutorial")
@@ -345,6 +478,69 @@ namespace TutorialPlatform.Migrations
                 });
 
             modelBuilder.Entity("TutorialPlatform.Models.Tutorial", b =>
+                {
+                    b.HasOne("TutorialPlatform.Models.Category", "Category")
+                        .WithMany("Tutorials")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("TutorialPlatform.Models.UserChapterProgress", b =>
+                {
+                    b.HasOne("TutorialPlatform.Models.Chapter", "Chapter")
+                        .WithMany()
+                        .HasForeignKey("ChapterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TutorialPlatform.Models.UserTutorialProgress", null)
+                        .WithMany("Chapters")
+                        .HasForeignKey("UserTutorialProgressId");
+
+                    b.Navigation("Chapter");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TutorialPlatform.Models.UserTutorialProgress", b =>
+                {
+                    b.HasOne("TutorialPlatform.Models.Tutorial", "Tutorial")
+                        .WithMany()
+                        .HasForeignKey("TutorialId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tutorial");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TutorialPlatform.Models.Category", b =>
+                {
+                    b.Navigation("Tutorials");
+                });
+
+            modelBuilder.Entity("TutorialPlatform.Models.Tutorial", b =>
+                {
+                    b.Navigation("Chapters");
+                });
+
+            modelBuilder.Entity("TutorialPlatform.Models.UserTutorialProgress", b =>
                 {
                     b.Navigation("Chapters");
                 });

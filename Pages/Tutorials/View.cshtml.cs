@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
-using TutorialPlatform.Areas.Identity.Data;
+using TutorialPlatform.Data;
 using TutorialPlatform.Models;
 
 namespace TutorialPlatform.Pages.Tutorials
@@ -30,7 +30,7 @@ namespace TutorialPlatform.Pages.Tutorials
                     .OrderBy(c => c.Order)
                     .ToList();
             }
-            
+
             if (Tutorial == null)
             {
                 return NotFound();

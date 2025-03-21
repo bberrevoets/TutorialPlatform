@@ -9,7 +9,7 @@ using Prometheus;
 
 using Serilog;
 
-using TutorialPlatform.Areas.Identity.Data;
+using TutorialPlatform.Data;
 using TutorialPlatform.Services;
 using TutorialPlatform.Settings;
 
@@ -47,13 +47,13 @@ builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 builder.Services.AddHealthChecksUI(setup =>
 {
-    setup.SetEvaluationTimeInSeconds(10);     
+    setup.SetEvaluationTimeInSeconds(10);
     setup.MaximumHistoryEntriesPerEndpoint(50);
-    setup.AddHealthCheckEndpoint("TutorialPlatform", "/health");   
-}).AddInMemoryStorage();     
+    setup.AddHealthCheckEndpoint("TutorialPlatform", "/health");
+}).AddInMemoryStorage();
 
-var seqHealthUri = builder.Configuration["HealthChecks:Seq:Uri"] 
-                   ?? throw new InvalidOperationException("Seq health check URI not configured.");
+string seqHealthUri = builder.Configuration["HealthChecks:Seq:Uri"]
+                      ?? throw new InvalidOperationException("Seq health check URI not configured.");
 
 builder.Services.AddHealthChecks()
     .AddSqlServer(connectionString, name: "sql", tags: ["db", "sql"])

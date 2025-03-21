@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 using System.Security.Claims;
 
-using TutorialPlatform.Areas.Identity.Data;
+using TutorialPlatform.Data;
 using TutorialPlatform.Models;
 
 namespace TutorialPlatform.Pages.Tutorials

@@ -1,21 +1,18 @@
 ﻿#nullable disable
 
-using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 
+using System.Text;
+
 namespace TutorialPlatform.Areas.Identity.Pages.Account
 {
     public class ConfirmEmailModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<ConfirmEmailModel> _logger;
+        private readonly UserManager<IdentityUser> _userManager;
 
         public ConfirmEmailModel(UserManager<IdentityUser> userManager, ILogger<ConfirmEmailModel> logger)
         {
@@ -23,17 +20,19 @@ namespace TutorialPlatform.Areas.Identity.Pages.Account
             _logger = logger;
         }
 
-        [TempData]
-        public string StatusMessage { get; set; }
+        [TempData] public string StatusMessage { get; set; }
+
         public async Task<IActionResult> OnGetAsync(string userId, string code)
         {
             if (userId == null || code == null)
             {
-                _logger.LogWarning("❌ Email confirmation attempted with missing parameters: userId={UserId}, code={Code}", userId, code);
+                _logger.LogWarning(
+                    "❌ Email confirmation attempted with missing parameters: userId={UserId}, code={Code}", userId,
+                    code);
                 return RedirectToPage("/Index");
             }
 
-            var user = await _userManager.FindByIdAsync(userId);
+            IdentityUser user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 _logger.LogWarning("❌ Email confirmation failed. User with ID {UserId} not found.", userId);
@@ -48,8 +47,8 @@ namespace TutorialPlatform.Areas.Identity.Pages.Account
             {
                 _logger.LogError(e, "❌ Confirming Email for {UserId} failed. Failed to Decode {Code}", userId, code);
             }
-                
-            var result = await _userManager.ConfirmEmailAsync(user, code);
+
+            IdentityResult result = await _userManager.ConfirmEmailAsync(user, code);
             StatusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
             if (result.Succeeded)
             {

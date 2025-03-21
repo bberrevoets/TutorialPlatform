@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace TutorialPlatform.Pages
 {
@@ -16,5 +15,4 @@ namespace TutorialPlatform.Pages
         {
         }
     }
-
 }
