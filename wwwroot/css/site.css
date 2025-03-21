@@ -59,3 +59,14 @@ body { margin-bottom: 60px; }
     height: 100%;
     transition: width 0.3s ease;
 }
+
+.tag-badge {
+    -ms-border-radius: 12px;
+    background-color: #d1ecf1;
+    border-radius: 12px;
+    color: #0c5460;
+    display: inline-block;
+    font-size: 0.85rem;
+    margin-right: 6px;
+    padding: 2px 8px;
+}

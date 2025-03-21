@@ -27,6 +27,8 @@ namespace TutorialPlatform.Pages.Tutorials
 
             List<Tutorial> tutorials = await _context.Tutorials
                 .Include(t => t.Chapters)
+                .Include(t => t.Category)
+                .Include(t => t.Tags)
                 .ToListAsync();
 
             List<UserChapterProgress> userChapterProgress = await _context.UserChapterProgresses
@@ -56,6 +58,9 @@ namespace TutorialPlatform.Pages.Tutorials
             public int CompletedChapters { get; set; }
             public int TotalChapters { get; set; }
             public bool IsCompleted { get; set; }
+            public string CategoryName => Tutorial.Category?.Name ?? "Uncategorized";
+            public List<string> TagNames => Tutorial.Tags.Select(t => t.Name).ToList();
+
         }
     }
 }

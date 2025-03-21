@@ -31,9 +31,14 @@ builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection("
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
                           throw new InvalidOperationException(
                               "Connection string 'DefaultConnection' not found.");
-;
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionString, sql =>
+    {
+        // Use SplitQuery to avoid Cartesian explosion and improve performance
+        // when including multiple collection navigations (e.g., Chapters and Tags)
+        sql.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+    }));
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 {
