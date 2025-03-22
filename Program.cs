@@ -1,24 +1,18 @@
 using Berrevoets.TutorialPlatform.Data;
 using Berrevoets.TutorialPlatform.Services;
-
+using Berrevoets.TutorialPlatform.Settings;
 using HealthChecks.UI.Client;
-
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-
 using Prometheus;
-
+using QuestPDF;
+using QuestPDF.Infrastructure;
 using Serilog;
 
-using TutorialPlatform.Data;
-using TutorialPlatform.Services;
-using TutorialPlatform.Settings;
+Settings.License = LicenseType.Community;
 
-QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
-
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
@@ -33,9 +27,9 @@ builder.Host.UseSerilog();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection("ConnectionStrings"));
 
-string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
-                          throw new InvalidOperationException(
-                              "Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
+                       throw new InvalidOperationException(
+                           "Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString, sql =>
@@ -63,8 +57,8 @@ builder.Services.AddHealthChecksUI(setup =>
     setup.AddHealthCheckEndpoint("TutorialPlatform", "/health");
 }).AddInMemoryStorage();
 
-string seqHealthUri = builder.Configuration["HealthChecks:Seq:Uri"]
-                      ?? throw new InvalidOperationException("Seq health check URI not configured.");
+var seqHealthUri = builder.Configuration["HealthChecks:Seq:Uri"]
+                   ?? throw new InvalidOperationException("Seq health check URI not configured.");
 
 builder.Services.AddHealthChecks()
     .AddSqlServer(connectionString, name: "sql", tags: ["db", "sql"])
@@ -74,7 +68,7 @@ builder.Services.AddHealthChecks()
         tags: ["logging", "seq"]
     );
 
-WebApplication app = builder.Build();
+var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
@@ -95,10 +89,7 @@ app.UseAuthorization();
 
 app.MapHealthChecks("/health", new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
 
-app.MapHealthChecksUI(options =>
-{
-    options.UIPath = "/health-ui";
-});
+app.MapHealthChecksUI(options => { options.UIPath = "/health-ui"; });
 
 app.MapMetrics();
 
@@ -106,9 +97,9 @@ app.MapStaticAssets();
 app.MapRazorPages()
     .WithStaticAssets();
 
-using (IServiceScope scope = app.Services.CreateScope())
+using (var scope = app.Services.CreateScope())
 {
-    ApplicationDbContext db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     db.Database.Migrate();
     Seeder.Seed(db);
 }

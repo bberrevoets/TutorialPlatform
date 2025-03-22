@@ -1,35 +1,32 @@
-﻿using Microsoft.AspNetCore.Identity.UI.Services;
+﻿using System.Net.Mail;
+using Berrevoets.TutorialPlatform.Settings;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 
-using System.Net.Mail;
+namespace Berrevoets.TutorialPlatform.Services;
 
-using TutorialPlatform.Settings;
-
-namespace TutorialPlatform.Services
+public class EmailSender : IEmailSender
 {
-    public class EmailSender : IEmailSender
+    private readonly ILogger<EmailSender> _logger;
+    private readonly EmailSettings _settings;
+
+    public EmailSender(ILogger<EmailSender> logger, IOptions<EmailSettings> options)
     {
-        private readonly ILogger<EmailSender> _logger;
-        private readonly EmailSettings _settings;
+        _logger = logger;
+        _settings = options.Value;
+    }
 
-        public EmailSender(ILogger<EmailSender> logger, IOptions<EmailSettings> options)
+    public Task SendEmailAsync(string email, string subject, string htmlMessage)
+    {
+        SmtpClient smtpClient = new(_settings.SmtpHost, _settings.SmtpPort)
         {
-            _logger = logger;
-            _settings = options.Value;
-        }
+            DeliveryMethod = SmtpDeliveryMethod.Network, EnableSsl = _settings.EnableSsl
+        };
 
-        public Task SendEmailAsync(string email, string subject, string htmlMessage)
-        {
-            SmtpClient smtpClient = new(_settings.SmtpHost, _settings.SmtpPort)
-            {
-                DeliveryMethod = SmtpDeliveryMethod.Network, EnableSsl = _settings.EnableSsl
-            };
+        MailMessage mailMessage = new(_settings.FromEmail, email, subject, htmlMessage) { IsBodyHtml = true };
 
-            MailMessage mailMessage = new(_settings.FromEmail, email, subject, htmlMessage) { IsBodyHtml = true };
+        _logger.LogInformation("Sending email to {Email}: {Subject}", email, subject);
 
-            _logger.LogInformation("Sending email to {Email}: {Subject}", email, subject);
-
-            return smtpClient.SendMailAsync(mailMessage);
-        }
+        return smtpClient.SendMailAsync(mailMessage);
     }
 }

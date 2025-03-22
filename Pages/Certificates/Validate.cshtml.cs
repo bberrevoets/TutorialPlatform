@@ -1,41 +1,35 @@
+using Berrevoets.TutorialPlatform.Data;
 using Berrevoets.TutorialPlatform.Models.Certificates;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
-using TutorialPlatform.Data;
+namespace Berrevoets.TutorialPlatform.Pages.Certificates;
 
-namespace Berrevoets.TutorialPlatform.Pages.Certificates
+public class ValidateModel : PageModel
 {
-    public class ValidateModel : PageModel
+    private readonly ApplicationDbContext _context;
+
+    public ValidateModel(ApplicationDbContext context)
     {
-        private readonly ApplicationDbContext _context;
+        _context = context;
+    }
 
-        public ValidateModel(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+    [BindProperty(SupportsGet = true)]
+    public string? SerialNumber { get; set; }
 
-        [BindProperty(SupportsGet = true)]
-        public string? SerialNumber { get; set; }
+    public IssuedCertificate? Certificate { get; set; }
 
-        public IssuedCertificate? Certificate { get; set; }
+    public bool IsSearched => !string.IsNullOrWhiteSpace(SerialNumber);
+    public bool IsValid => Certificate != null;
 
-        public bool IsSearched => !string.IsNullOrWhiteSpace(SerialNumber);
-        public bool IsValid => Certificate != null;
+    public async Task OnGetAsync()
+    {
+        if (IsSearched == false) return;
 
-        public async Task OnGetAsync()
-        {
-            if (IsSearched == false)
-            {
-                return;
-            }
-
-            Certificate = await _context.IssuedCertificates
-                .Include(c => c.User)
-                .Include(c => c.Tutorial)
-                .FirstOrDefaultAsync(c => c.SerialNumber == SerialNumber);
-        }
+        Certificate = await _context.IssuedCertificates
+            .Include(c => c.User)
+            .Include(c => c.Tutorial)
+            .FirstOrDefaultAsync(c => c.SerialNumber == SerialNumber);
     }
 }

@@ -1,7 +1,6 @@
-﻿namespace TutorialPlatform.Settings
+﻿namespace Berrevoets.TutorialPlatform.Settings;
+
+public class ConnectionStrings
 {
-    public class ConnectionStrings
-    {
-        public string DefaultConnection { get; set; } = string.Empty;
-    }
+    public string DefaultConnection { get; set; } = string.Empty;
 }

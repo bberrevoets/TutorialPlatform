@@ -29,26 +29,26 @@
             </div>
             <div class="form-floating mb-3">
                 <label asp-for="Input.FirstName"></label>
-                <input asp-for="Input.FirstName" class="form-control" />
+                <input asp-for="Input.FirstName" class="form-control"/>
                 <span asp-validation-for="Input.FirstName" class="text-danger"></span>
             </div>
 
             <div class="form-floating mb-3">
                 <label asp-for="Input.MiddleName"></label>
-                <input asp-for="Input.MiddleName" class="form-control" />
+                <input asp-for="Input.MiddleName" class="form-control"/>
                 <span asp-validation-for="Input.MiddleName" class="text-danger"></span>
             </div>
 
             <div class="form-floating mb-3">
                 <label asp-for="Input.LastName"></label>
-                <input asp-for="Input.LastName" class="form-control" />
+                <input asp-for="Input.LastName" class="form-control"/>
                 <span asp-validation-for="Input.LastName" class="text-danger"></span>
             </div>
 
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </form>
     </div>
-    <div class="col-md-6 col-md-offset-2">
+    <div class="col-md-6 offset-md-2">
         <section>
             <h3>Use another service to register.</h3>
             <hr/>
@@ -67,7 +67,7 @@
                 }
                 else
                 {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
                         <div>
                             <p>
                                 @foreach (var provider in Model.ExternalLogins!)
