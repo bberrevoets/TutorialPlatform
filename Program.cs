@@ -1,3 +1,4 @@
+using Berrevoets.TutorialPlatform.Data;
 using Berrevoets.TutorialPlatform.Services;
 
 using HealthChecks.UI.Client;
@@ -14,6 +15,8 @@ using Serilog;
 using TutorialPlatform.Data;
 using TutorialPlatform.Services;
 using TutorialPlatform.Settings;
+
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -42,7 +45,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         sql.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
     }));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
     options.User.RequireUniqueEmail = true;

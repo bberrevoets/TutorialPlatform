@@ -13,31 +13,38 @@ namespace Berrevoets.TutorialPlatform.Services
             {
                 container.Page(page =>
                 {
-                    page.Size(PageSizes.A4);
-                    page.Margin(50);
-                    page.DefaultTextStyle(x => x.FontSize(16));
-                    page.Content().Column(col =>
+                    page.Size(PageSizes.A4.Landscape());
+                    page.Margin(20);
+
+                    page.Content().Border(2).Padding(30).Column(col =>
                     {
-                        col.Spacing(10);
+                        col.Spacing(20);
 
+                        // Logo
+                        col.Item().AlignCenter().Height(120).Element(container =>
+                        {
+                            string imagePath = Path.Combine("wwwroot", "images", "logo.png");
+                            if (File.Exists(imagePath))
+                            {
+                                byte[] imageData = File.ReadAllBytes(imagePath);
+                                container.Image(imageData).FitHeight();
+                            }
+                        });
+
+                        // Header
                         col.Item().AlignCenter().Text("Certificate of Completion")
-                            .FontSize(28).Bold();
+                            .FontSize(32).Bold().FontColor(Colors.Blue.Darken2);
 
-                        col.Item().Height(20); // spacer
+                        col.Item().AlignCenter().Text("This certifies that").FontSize(18);
 
-                        col.Item().Text("This certifies that").AlignCenter();
-                        col.Item().Text(info.UserName).FontSize(22).SemiBold().AlignCenter();
+                        col.Item().AlignCenter().Text(info.UserName).FontSize(24).Bold();
 
-                        col.Item().Height(10); // spacer
+                        col.Item().AlignCenter().Text("has successfully completed the tutorial").FontSize(18);
+                        col.Item().AlignCenter().Text(info.TutorialTitle).FontSize(22).Italic();
 
-                        col.Item().Text("has successfully completed the tutorial").AlignCenter();
-                        col.Item().Text(info.TutorialTitle).FontSize(20).Italic().AlignCenter();
-
-                        col.Item().Height(20); // spacer
-
-                        col.Item().Text($"Date: {info.CompletionDate:yyyy-MM-dd}").AlignCenter();
-                        col.Item().Text($"Certificate ID: {info.SerialNumber}")
-                            .FontSize(10).AlignCenter();
+                        col.Item().AlignCenter().Text($"Date: {info.CompletionDate:yyyy-MM-dd}").FontSize(14);
+                        col.Item().AlignCenter().Text($"Certificate ID: {info.SerialNumber}").FontSize(10)
+                            .FontColor(Colors.Grey.Darken1);
                     });
                 });
             });

@@ -32,6 +32,9 @@
             @if (item.IsCompleted)
             {
                 <span style="color: green">✓ Completed</span>
+                <a asp-page="DownloadCertificate" asp-route-tutorialId="@item.Tutorial.Id" class="btn btn-success">
+                    🎓 Download Certificate
+                </a>
             }
         </p>
         <a asp-page="View" asp-route-id="@t.Id">View Tutorial</a>

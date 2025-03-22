@@ -1,3 +1,5 @@
+using Berrevoets.TutorialPlatform.Data;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,9 +17,9 @@ namespace TutorialPlatform.Pages.Tutorials
     public class ChapterModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ChapterModel(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public ChapterModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;

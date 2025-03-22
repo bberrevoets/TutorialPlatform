@@ -3,6 +3,8 @@
 
 #nullable disable
 
+using Berrevoets.TutorialPlatform.Data;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,9 +14,9 @@ namespace TutorialPlatform.Areas.Identity.Pages.Account
     public class LogoutModel : PageModel
     {
         private readonly ILogger<LogoutModel> _logger;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public LogoutModel(SignInManager<IdentityUser> signInManager, ILogger<LogoutModel> logger)
+        public LogoutModel(SignInManager<ApplicationUser> signInManager, ILogger<LogoutModel> logger)
         {
             _signInManager = signInManager;
             _logger = logger;

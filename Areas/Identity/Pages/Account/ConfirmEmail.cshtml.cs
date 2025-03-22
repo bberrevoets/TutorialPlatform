@@ -1,5 +1,7 @@
 ﻿#nullable disable
 
+using Berrevoets.TutorialPlatform.Data;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,9 +14,9 @@ namespace TutorialPlatform.Areas.Identity.Pages.Account
     public class ConfirmEmailModel : PageModel
     {
         private readonly ILogger<ConfirmEmailModel> _logger;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ConfirmEmailModel(UserManager<IdentityUser> userManager, ILogger<ConfirmEmailModel> logger)
+        public ConfirmEmailModel(UserManager<ApplicationUser> userManager, ILogger<ConfirmEmailModel> logger)
         {
             _userManager = userManager;
             _logger = logger;
@@ -32,7 +34,7 @@ namespace TutorialPlatform.Areas.Identity.Pages.Account
                 return RedirectToPage("/Index");
             }
 
-            IdentityUser user = await _userManager.FindByIdAsync(userId);
+            ApplicationUser user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 _logger.LogWarning("❌ Email confirmation failed. User with ID {UserId} not found.", userId);
