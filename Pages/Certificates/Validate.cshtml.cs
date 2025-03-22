@@ -18,7 +18,7 @@ namespace Berrevoets.TutorialPlatform.Pages.Certificates
         }
 
         [BindProperty(SupportsGet = true)]
-        public string SerialNumber { get; set; }
+        public string? SerialNumber { get; set; }
 
         public IssuedCertificate? Certificate { get; set; }
 
