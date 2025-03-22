@@ -19,6 +19,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Category> Categories { get; set; } = default!;
     public DbSet<Tag> Tags { get; set; } = default!;
     public DbSet<IssuedCertificate> IssuedCertificates { get; set; } = default!;
+    public DbSet<CategoryTranslation> CategoryTranslations { get; set; } = default!;
+    public DbSet<TagTranslation> TagTranslations { get; set; } = default!;
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

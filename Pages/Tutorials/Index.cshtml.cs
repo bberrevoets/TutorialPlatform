@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Security.Claims;
 using Berrevoets.TutorialPlatform.Data;
 using Berrevoets.TutorialPlatform.Models;
@@ -23,13 +24,13 @@ public class IndexModel : PageModel
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
-        List<Tutorial> tutorials = await _context.Tutorials
+        var tutorials = await _context.Tutorials
             .Include(t => t.Chapters)
-            .Include(t => t.Category)
-            .Include(t => t.Tags)
+            .Include(t => t.Category).ThenInclude(c => c.Translations)
+            .Include(t => t.Tags).ThenInclude(tag => tag.Translations)
             .ToListAsync();
 
-        List<UserChapterProgress> userChapterProgress = await _context.UserChapterProgresses
+        var userChapterProgress = await _context.UserChapterProgresses
             .Where(p => p.UserId == userId)
             .ToListAsync();
 
@@ -56,7 +57,15 @@ public class IndexModel : PageModel
         public int CompletedChapters { get; set; }
         public int TotalChapters { get; set; }
         public bool IsCompleted { get; set; }
-        public string CategoryName => Tutorial.Category.Name;
-        public List<string> TagNames => Tutorial.Tags.Select(t => t.Name).ToList();
+
+        public string CategoryName =>
+            Tutorial.Category?.Translations
+                .FirstOrDefault(t => t.Language == CultureInfo.CurrentUICulture.TwoLetterISOLanguageName)
+                ?.Name ?? "(No translation)";
+
+        public List<string> TagNames =>
+            Tutorial.Tags.Select(t =>
+                t.Translations.FirstOrDefault(tt => tt.Language == CultureInfo.CurrentUICulture.TwoLetterISOLanguageName)
+                    ?.Name ?? "(No translation)").ToList();
     }
 }

@@ -20,4 +20,8 @@ public class Tutorial
 
     public Category Category { get; set; } = default!;
     public ICollection<Tag> Tags { get; set; } = new List<Tag>();
+
+    [Required]
+    [StringLength(10)]
+    public string Language { get; set; } = "en";
 }

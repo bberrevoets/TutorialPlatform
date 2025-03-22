@@ -10,6 +10,8 @@ using QuestPDF;
 using QuestPDF.Infrastructure;
 using Serilog;
 
+using System.Globalization;
+
 Settings.License = LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -69,6 +71,18 @@ builder.Services.AddHealthChecks()
     );
 
 var app = builder.Build();
+
+var supportedCultures = new[] { "en", "nl" };
+
+var localizationOptions = new RequestLocalizationOptions()
+    .SetDefaultCulture("en")
+    .AddSupportedCultures(supportedCultures)
+    .AddSupportedUICultures(supportedCultures);
+
+app.UseRequestLocalization(localizationOptions);
+
+CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en");
+CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en");
 
 if (!app.Environment.IsDevelopment())
 {

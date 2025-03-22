@@ -4,6 +4,7 @@ using Berrevoets.TutorialPlatform.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Berrevoets.TutorialPlatform.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250322090624_AddLanguageToTutorial")]
+    partial class AddLanguageToTutorial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,27 +112,6 @@ namespace Berrevoets.TutorialPlatform.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.HasKey("Id");
-
-                    b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("Berrevoets.TutorialPlatform.Models.CategoryTranslation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Language")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -137,9 +119,7 @@ namespace Berrevoets.TutorialPlatform.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("CategoryTranslations");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Berrevoets.TutorialPlatform.Models.Certificates.IssuedCertificate", b =>
@@ -216,37 +196,14 @@ namespace Berrevoets.TutorialPlatform.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Tags");
-                });
-
-            modelBuilder.Entity("Berrevoets.TutorialPlatform.Models.TagTranslation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Language")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("TagId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TagId");
-
-                    b.ToTable("TagTranslations");
                 });
 
             modelBuilder.Entity("Berrevoets.TutorialPlatform.Models.Tutorial", b =>
@@ -498,17 +455,6 @@ namespace Berrevoets.TutorialPlatform.Migrations
                     b.ToTable("TagTutorial");
                 });
 
-            modelBuilder.Entity("Berrevoets.TutorialPlatform.Models.CategoryTranslation", b =>
-                {
-                    b.HasOne("Berrevoets.TutorialPlatform.Models.Category", "Category")
-                        .WithMany("Translations")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-                });
-
             modelBuilder.Entity("Berrevoets.TutorialPlatform.Models.Certificates.IssuedCertificate", b =>
                 {
                     b.HasOne("Berrevoets.TutorialPlatform.Models.Tutorial", "Tutorial")
@@ -537,17 +483,6 @@ namespace Berrevoets.TutorialPlatform.Migrations
                         .IsRequired();
 
                     b.Navigation("Tutorial");
-                });
-
-            modelBuilder.Entity("Berrevoets.TutorialPlatform.Models.TagTranslation", b =>
-                {
-                    b.HasOne("Berrevoets.TutorialPlatform.Models.Tag", "Tag")
-                        .WithMany("Translations")
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Tag");
                 });
 
             modelBuilder.Entity("Berrevoets.TutorialPlatform.Models.Tutorial", b =>
@@ -671,14 +606,7 @@ namespace Berrevoets.TutorialPlatform.Migrations
 
             modelBuilder.Entity("Berrevoets.TutorialPlatform.Models.Category", b =>
                 {
-                    b.Navigation("Translations");
-
                     b.Navigation("Tutorials");
-                });
-
-            modelBuilder.Entity("Berrevoets.TutorialPlatform.Models.Tag", b =>
-                {
-                    b.Navigation("Translations");
                 });
 
             modelBuilder.Entity("Berrevoets.TutorialPlatform.Models.Tutorial", b =>

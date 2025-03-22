@@ -1,4 +1,5 @@
 ﻿using Berrevoets.TutorialPlatform.Models;
+using NuGet.Packaging;
 
 namespace Berrevoets.TutorialPlatform.Data;
 
@@ -8,13 +9,50 @@ public static class Seeder
     {
         if (context.Tutorials.Any()) return;
 
-        // 1. Add default category
-        Category category = new() { Name = "ROS2" };
+        // Create a default category with English and Dutch translations
+        var category = new Category();
+        category.Translations.AddRange([
+            new CategoryTranslation
+            {
+                Language = "en",
+                Name = "ROS2"
+            },
+            new CategoryTranslation
+            {
+                Language = "nl",
+                Name = "ROS2"
+            }
+        ]);
         context.Categories.Add(category);
 
-        // 2. Add default tags
-        Tag tag1 = new() { Name = "Beginner" };
-        Tag tag2 = new() { Name = "Robotics" };
+        // Create default tags with English and Dutch translations
+        var tag1 = new Tag();
+        tag1.Translations.AddRange([
+            new TagTranslation
+            {
+                Language = "en",
+                Name = "Beginner"
+            },
+            new TagTranslation
+            {
+                Language = "nl",
+                Name = "Beginner"
+            }
+        ]);
+
+        var tag2 = new Tag();
+        tag2.Translations.AddRange([
+            new TagTranslation
+            {
+                Language = "en",
+                Name = "Robotics"
+            },
+            new TagTranslation
+            {
+                Language = "nl",
+                Name = "Robotica"
+            }
+        ]);
 
         context.Tags.AddRange(tag1, tag2);
 
@@ -24,6 +62,7 @@ public static class Seeder
             Description = "Learn the basics of ROS2 using a beginner-friendly tutorial.",
             Category = category,
             Tags = new List<Tag> { tag1, tag2 },
+            Language = "en",
             Chapters = new List<Chapter>
             {
                 new()

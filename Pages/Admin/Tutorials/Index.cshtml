@@ -1,0 +1,38 @@
+﻿@page
+@using System.Globalization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Berrevoets.TutorialPlatform.Pages.Admin.Tutorials.IndexModel
+@{
+    ViewData["Title"] = "Manage Tutorials";
+}
+
+<h1>Manage Tutorials</h1>
+
+<a class="btn btn-success mb-3" asp-page="Create">+ New Tutorial</a>
+
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Category</th>
+        <th>Chapters</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var tutorial in Model.Tutorials)
+    {
+        <tr>
+            <td>@tutorial.Title</td>
+            <td>
+                @(tutorial.Category.Translations
+                    .FirstOrDefault(t => t.Language == CultureInfo.CurrentUICulture.TwoLetterISOLanguageName)?.Name ?? "(No translation)")
+            </td>
+            <td>@tutorial.Chapters.Count</td>
+            <td>
+                <a class="btn btn-sm btn-primary" asp-page="Edit" asp-route-id="@tutorial.Id">Edit</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using System.Globalization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -34,6 +36,12 @@
             </div>
         </div>
         <partial name="_LoginPartial"/>
+        <form method="post" asp-page="/SetLanguage" class="d-inline">
+            <select name="culture" onchange="this.form.submit()" class="form-select form-select-sm w-auto d-inline">
+                <option value="en" selected="@("en" == CultureInfo.CurrentUICulture.TwoLetterISOLanguageName)">English</option>
+                <option value="nl" selected="@("nl" == CultureInfo.CurrentUICulture.TwoLetterISOLanguageName)">Nederlands</option>
+            </select>
+        </form>
     </nav>
 </header>
 <div class="container">
