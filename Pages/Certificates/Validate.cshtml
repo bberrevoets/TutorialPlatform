@@ -1,0 +1,34 @@
+﻿@page
+@model Berrevoets.TutorialPlatform.Pages.Certificates.ValidateModel
+@{
+    ViewData["Title"] = "Validate Certificate";
+}
+
+<h1>Validate Certificate</h1>
+
+<form method="get">
+    <div class="form-group">
+        <label for="SerialNumber">Enter Certificate ID:</label>
+        <input asp-for="SerialNumber" class="form-control" style="max-width: 400px;" />
+        <button class="btn btn-primary mt-2" type="submit">Validate</button>
+    </div>
+</form>
+
+@if (Model.IsSearched)
+{
+    if (Model.IsValid)
+    {
+        <div class="alert alert-success mt-3">
+            ✅ This certificate is valid.<br />
+            <strong>Name:</strong> @Model.Certificate?.User.FullName<br />
+            <strong>Tutorial:</strong> @Model.Certificate?.Tutorial.Title<br />
+            <strong>Issued:</strong> @Model.Certificate?.IssuedAt.ToShortDateString()<br />
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger mt-3">
+            ❌ This certificate ID is not valid or does not exist.
+        </div>
+    }
+}
