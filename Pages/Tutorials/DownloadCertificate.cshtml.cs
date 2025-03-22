@@ -47,17 +47,35 @@ namespace Berrevoets.TutorialPlatform.Pages.Tutorials
             UserTutorialProgress? progress = await _context.UserTutorialProgresses.FirstOrDefaultAsync(p =>
                 p.TutorialId == tutorialId && p.UserId == userId && p.IsCompleted);
 
-            if (progress == null)
+            if (progress == null || userId == null)
             {
                 return Forbid();
+            }
+
+            IssuedCertificate? existingCert =
+                await _context.IssuedCertificates.FirstOrDefaultAsync(c =>
+                    c.UserId == userId && c.TutorialId == tutorial.Id);
+            
+            if (existingCert == null)
+            {
+                existingCert = new IssuedCertificate
+                {
+                    UserId = userId,
+                    TutorialId = tutorial.Id,
+                    IssuedAt = DateTime.UtcNow,
+                    SerialNumber = GenerateSerialNumber(userId, tutorial.Id)
+                };
+
+                _context.IssuedCertificates.Add(existingCert);
+                await _context.SaveChangesAsync();
             }
 
             CertificateInfo cert = new()
             {
                 UserName = userName,
                 TutorialTitle = tutorial.Title,
-                CompletionDate = progress.CompletionDate ?? DateTime.UtcNow,
-                SerialNumber = GenerateSerialNumber(userId, tutorialId)
+                CompletionDate = existingCert.IssuedAt,
+                SerialNumber = existingCert.SerialNumber
             };
 
             byte[] pdf = _certificateService.GenerateCertificate(cert);

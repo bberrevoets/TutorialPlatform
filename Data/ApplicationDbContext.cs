@@ -1,4 +1,5 @@
 ﻿using Berrevoets.TutorialPlatform.Data;
+using Berrevoets.TutorialPlatform.Models.Certificates;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -21,5 +22,6 @@ namespace TutorialPlatform.Data
         public DbSet<UserChapterProgress> UserChapterProgresses { get; set; } = default!;
         public DbSet<Category> Categories { get; set; } = default!;
         public DbSet<Tag> Tags { get; set; } = default!;
+        public DbSet<IssuedCertificate> IssuedCertificates { get; set; } = default!;
     }
 }
